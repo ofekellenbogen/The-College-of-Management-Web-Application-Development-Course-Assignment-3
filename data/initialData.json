@@ -1,0 +1,90 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "JavaScript: The Good Parts",
+      "category": "Books",
+      "price": 29.99,
+      "inStock": true,
+      "rating": 4.5
+    },
+    {
+      "id": 2,
+      "name": "Clean Code",
+      "category": "Books",
+      "price": 38.50,
+      "inStock": true,
+      "rating": 4.8
+    },
+    {
+      "id": 3,
+      "name": "Designing Data-Intensive Applications",
+      "category": "Books",
+      "price": 45.00,
+      "inStock": false,
+      "rating": 4.9
+    },
+    {
+      "id": 4,
+      "name": "Wireless Mechanical Keyboard",
+      "category": "Electronics",
+      "price": 89.99,
+      "inStock": true,
+      "rating": 4.6
+    },
+    {
+      "id": 5,
+      "name": "Ergonomic Vertical Mouse",
+      "category": "Electronics",
+      "price": 49.90,
+      "inStock": true,
+      "rating": 4.3
+    },
+    {
+      "id": 6,
+      "name": "Ultra-Wide 34-Inch Monitor",
+      "category": "Electronics",
+      "price": 399.00,
+      "inStock": false,
+      "rating": 4.7
+    },
+    {
+      "id": 7,
+      "name": "Ceramic Developer Mug",
+      "category": "Merchandise",
+      "price": 14.99,
+      "inStock": true,
+      "rating": 4.2
+    }
+  ],
+  "reviews": [
+    {
+      "id": 101,
+      "productId": 1,
+      "author": "Alice Cohen",
+      "rating": 5,
+      "comment": "Essential book for any modern web developer!"
+    },
+    {
+      "id": 102,
+      "productId": 1,
+      "author": "Bob Miller",
+      "rating": 4,
+      "comment": "Classic principles, highly recommended."
+    },
+    {
+      "id": 103,
+      "productId": 2,
+      "author": "Charlie Levi",
+      "rating": 5,
+      "comment": "Changed how I write code completely."
+    },
+    {
+      "id": 104,
+      "productId": 4,
+      "author": "David Ben-Ari",
+      "rating": 4,
+      "comment": "Great tactile feedback and battery life."
+    }
+  ]
+}

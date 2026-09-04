@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <span class="logo-badge">SSR Schemas</span>
+        <h1 class="logo-title">סכמות משאבי המערכת (Resource Schemas)</h1>
+      </div>
+      <nav class="nav-links">
+        <a href="/" class="nav-btn">🎮 חזרה למשחק</a>
+        <a href="/schemas" class="nav-btn active">📋 סכמות המערכת (SSR)</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-container">
+    
+    <!-- SSR Notice Banner -->
+    <section class="mission-card glass-panel">
+      <div class="mission-header">
+        <h2 class="mission-title">📖 תיעוד סכמות המשאבים והמבנה הלוגי</h2>
+      </div>
+      <p class="mission-description">
+        עמוד זה מרונדר במלואו בצד השרת (Server-Side Rendering באמצעות EJS). הוא מפרט את המבנה של שני המשאבים המרכזיים במערכת: <strong>מוצרים (Products)</strong> ו<strong>ביקורות (Reviews)</strong>, כולל סוגי הנתונים (Data Types), שדות חובה, וקשר הגומלין (1:N Relationship).
+      </p>
+    </section>
+
+    <!-- Schemas Container -->
+    <div class="schemas-grid">
+      <% schemas.forEach(function(schema) { %>
+        <section class="schema-card glass-panel">
+          <div class="schema-header">
+            <div class="schema-title-row">
+              <h3 class="schema-name"><%= schema.name %></h3>
+              <span class="endpoint-tag code-font"><%= schema.resourceEndpoint %></span>
+            </div>
+            <p class="schema-desc"><%= schema.description %></p>
+          </div>
+
+          <!-- Fields Table -->
+          <div class="table-responsive">
+            <table class="data-table schema-table">
+              <thead>
+                <tr>
+                  <th>שם שדה</th>
+                  <th>סוג נתון (Type)</th>
+                  <th>חובה / אופציונלי</th>
+                  <th>תיאור השדה</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% schema.fields.forEach(function(field) { %>
+                  <tr>
+                    <td class="code-font font-bold"><%= field.name %></td>
+                    <td><span class="type-pill <%= field.type.toLowerCase() %>"><%= field.type %></span></td>
+                    <td>
+                      <% if (field.required) { %>
+                        <span class="badge-required">חובה (Required)</span>
+                      <% } else { %>
+                        <span class="badge-optional">אופציונלי (Optional)</span>
+                      <% } %>
+                    </td>
+                    <td><%= field.description %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Example JSON Payload -->
+          <div class="example-json-box">
+            <div class="code-header">
+              <span>דוגמה למבנה JSON תקין עבור <%= schema.name %></span>
+            </div>
+            <pre class="code-display code-font"><code><%= JSON.stringify(schema.example, null, 2) %></code></pre>
+          </div>
+        </section>
+      <% }); %>
+    </div>
+
+    <!-- REST API Endpoints Overview Section -->
+    <section class="glass-panel endpoints-overview-card">
+      <h3>🛣️ מפת נתיבי ה-REST API המלאה (/api)</h3>
+      <p>כל הנתיבים במערכת בנויים לפי עקרונות RESTful מנחים:</p>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Endpoint / Path</th>
+              <th>תיאור הפעולה</th>
+              <th>HTTP Status צפוי</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="method-tag get">GET</span></td>
+              <td class="code-font">/api/products</td>
+              <td>שליפת כל המוצרים (כולל תמיכה ב-Query Parameters לסינון ומיון)</td>
+              <td><span class="status-pill status-200">200 OK</span></td>
+            </tr>
+            <tr>
+              <td><span class="method-tag get">GET</span></td>
+              <td class="code-font">/api/products/:id</td>
+              <td>שליפת מוצר בודד לפי מזהה ב-Route Parameter</td>
+              <td><span class="status-pill status-200">200 OK</span> / <span class="status-pill status-404">404 Not Found</span></td>
+            </tr>
+            <tr>
+              <td><span class="method-tag post">POST</span></td>
+              <td class="code-font">/api/products</td>
+              <td>יצירת מוצר חדש (דורש JSON Request Body)</td>
+              <td><span class="status-pill status-201">201 Created</span> / <span class="status-pill status-400">400 Bad Request</span></td>
+            </tr>
+            <tr>
+              <td><span class="method-tag put">PUT</span></td>
+              <td class="code-font">/api/products/:id</td>
+              <td>עדכון מלא של מוצר קיים</td>
+              <td><span class="status-pill status-200">200 OK</span> / <span class="status-pill status-404">404 Not Found</span></td>
+            </tr>
+            <tr>
+              <td><span class="method-tag patch">PATCH</span></td>
+              <td class="code-font">/api/products/:id</td>
+              <td>עדכון חלקי של שדות מוצר קיים</td>
+              <td><span class="status-pill status-200">200 OK</span> / <span class="status-pill status-404">404 Not Found</span></td>
+            </tr>
+            <tr>
+              <td><span class="method-tag delete">DELETE</span></td>
+              <td class="code-font">/api/products/:id</td>
+              <td>מחיקת מוצר קיים מהמערכת ומחיקת ביקורות מקושרות (Cascade)</td>
+              <td><span class="status-pill status-200">200 OK</span> / <span class="status-pill status-404">404 Not Found</span></td>
+            </tr>
+            <tr>
+              <td><span class="method-tag get">GET</span></td>
+              <td class="code-font">/api/products/:id/reviews</td>
+              <td>שליפת כל הביקורות המקושרות למוצר ספציפי (Nested Resource)</td>
+              <td><span class="status-pill status-200">200 OK</span> / <span class="status-pill status-404">404 Not Found</span></td>
+            </tr>
+            <tr>
+              <td><span class="method-tag post">POST</span></td>
+              <td class="code-font">/api/products/:id/reviews</td>
+              <td>הוספת ביקורת חדשה למוצר ספציפי</td>
+              <td><span class="status-pill status-201">201 Created</span> / <span class="status-pill status-400">400 Bad Request</span></td>
+            </tr>
+            <tr>
+              <td><span class="method-tag get">GET</span></td>
+              <td class="code-font">/api/reviews</td>
+              <td>שליפת כל הביקורות במערכת</td>
+              <td><span class="status-pill status-200">200 OK</span></td>
+            </tr>
+            <tr>
+              <td><span class="method-tag delete">DELETE</span></td>
+              <td class="code-font">/api/reviews/:id</td>
+              <td>מחיקת ביקורת בודדת לפי מזהה</td>
+              <td><span class="status-pill status-200">200 OK</span> / <span class="status-pill status-404">404 Not Found</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>מטלה 3 - פיתוח יישומי אינטרנט | המכללה למינהל | שרת Node.js & Express עם SSR (EJS)</p>
+  </footer>
+</body>
+</html>

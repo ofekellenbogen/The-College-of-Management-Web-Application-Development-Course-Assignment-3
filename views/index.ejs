@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header / Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <span class="logo-badge">REST & HTTP</span>
+        <h1 class="logo-title">משחק לימוד HTTP ו-REST API</h1>
+      </div>
+      <nav class="nav-links">
+        <a href="/" class="nav-btn active" id="nav-game-link">🎮 משחק ראשי</a>
+        <a href="/schemas" class="nav-btn" target="_blank" id="nav-schemas-link">📋 סכמות המערכת (SSR)</a>
+        <button id="btn-reset-data" class="nav-btn btn-secondary" title="איפוס נתוני השרת למצב ברירת מחדל">
+          🔄 איפוס נתונים
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    
+    <!-- Top Stats & Progress Bar -->
+    <section class="game-status-card glass-panel" aria-label="Game Progress">
+      <div class="status-header">
+        <div class="stage-badge-container">
+          <span class="stage-label">מיקום במשחק:</span>
+          <span id="current-stage-indicator" class="stage-current-number">שלב 1 מתוך <%= totalStages %></span>
+        </div>
+        <div class="stats-counters">
+          <div class="stat-item">
+            <span class="stat-name">ניקוד:</span>
+            <span id="score-counter" class="stat-value">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-name">ניסיונות:</span>
+            <span id="attempts-counter" class="stat-value">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-name">שלבים שהושלמו:</span>
+            <span id="completed-counter" class="stat-value">0 / <%= totalStages %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage Selector / Stepper -->
+      <div class="stage-stepper-container" id="stage-stepper">
+        <% stages.forEach(function(s, index) { %>
+          <button class="stage-step-btn <%= index === 0 ? 'active' : '' %>" data-stage="<%= s.id %>" id="stage-step-<%= s.id %>">
+            <span class="step-num"><%= s.id %></span>
+            <span class="step-check">✓</span>
+          </button>
+        <% }); %>
+      </div>
+
+      <!-- Linear Progress Bar -->
+      <div class="progress-bar-wrapper">
+        <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+      </div>
+    </section>
+
+    <!-- Stage Mission Card -->
+    <section class="mission-card glass-panel" aria-label="Mission Details">
+      <div class="mission-header">
+        <h2 id="stage-title" class="mission-title"><%= stages[0].title %></h2>
+        <div class="concepts-tags" id="stage-concepts">
+          <% stages[0].concepts.forEach(function(c) { %>
+            <span class="concept-tag"><%= c %></span>
+          <% }); %>
+        </div>
+      </div>
+      <p id="stage-desc" class="mission-description"><%= stages[0].description %></p>
+      <div class="mission-instruction-box">
+        <strong>🎯 משימה:</strong>
+        <span id="stage-instruction"><%= stages[0].instruction %></span>
+      </div>
+      <div class="hint-toggle-row">
+        <button id="btn-toggle-hint" class="btn-text" type="button">💡 זקוק לרמז?</button>
+        <div id="hint-box" class="hint-box hidden">
+          <span><%= stages[0].hint %></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive HTTP Request Builder & Response Grid -->
+    <div class="gameplay-grid">
+      
+      <!-- HTTP Request Builder (Client Side Input Form) -->
+      <section class="builder-card glass-panel" aria-label="Request Builder">
+        <div class="panel-header">
+          <h3>🛠️ הרכבת בקשת ה-HTTP</h3>
+          <span class="panel-subtitle">הגדר את הבקשה שתישלח בפועל לשרת ה-REST</span>
+        </div>
+
+        <form id="http-request-form" class="request-form" onsubmit="return false;">
+          
+          <!-- Method and Path row -->
+          <div class="form-row endpoint-row">
+            <div class="field-group method-group">
+              <label for="http-method">Method</label>
+              <select id="http-method" name="httpMethod" class="input-select method-select">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="PATCH">PATCH</option>
+                <option value="DELETE">DELETE</option>
+              </select>
+            </div>
+
+            <div class="field-group path-group">
+              <label for="http-path">Request Path (Endpoint / Route Param)</label>
+              <div class="input-with-prefix">
+                <span class="url-prefix">http://localhost:3000</span>
+                <input type="text" id="http-path" name="httpPath" class="input-text code-font" placeholder="/api/products" value="/api/products" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Query Parameters Builder Accordion/Section -->
+          <div class="query-params-section">
+            <div class="section-title-row">
+              <label>🔍 Query Parameters (פרמטרים בשורת הכתובת)</label>
+              <button type="button" id="btn-add-query-param" class="btn-small btn-outline">+ הוסף פרמטר</button>
+            </div>
+            <div id="query-params-list" class="params-list">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+          <!-- Request Body Section -->
+          <div class="request-body-section" id="request-body-container">
+            <div class="section-title-row">
+              <label for="request-body-input">📦 Request Body (JSON Format)</label>
+              <button type="button" id="btn-format-json" class="btn-small btn-outline">⚡ Format JSON</button>
+            </div>
+            <textarea id="request-body-input" class="textarea-code code-font" rows="6" placeholder='{\n  "name": "...",\n  "category": "...",\n  "price": 0\n}'></textarea>
+            <div id="json-error-msg" class="field-error hidden">שגיאת תחביר JSON! יש להקפיד על מרכאות כפולות ומבנה תקין.</div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions">
+            <button type="button" id="btn-send-request" class="btn-primary btn-large">
+              🚀 שלח בקשת HTTP לשרת
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Server Live Response & Validation Feedback -->
+      <section class="response-card glass-panel" aria-label="Server Response">
+        <div class="panel-header">
+          <h3>📡 תגובת השרת (Server Response)</h3>
+          <span class="panel-subtitle">תוצאת ביצוע הבקשה האמיתית מול ה-API של השרת</span>
+        </div>
+
+        <!-- Verification Result Banner -->
+        <div id="verification-banner" class="verification-banner pending">
+          <div class="banner-icon" id="banner-icon">ℹ️</div>
+          <div class="banner-content">
+            <h4 id="banner-title">ממתין לשליחת בקשה</h4>
+            <p id="banner-feedback">הרכב את הבקשה המתאימה לשלב הנוכחי ולחץ על "שלח בקשת HTTP לשרת".</p>
+          </div>
+          <button type="button" id="btn-next-stage" class="btn-success hidden">
+            המשך לשלב הבא ⬅️
+          </button>
+        </div>
+
+        <!-- HTTP Response Details -->
+        <div class="response-meta-bar">
+          <div class="meta-item">
+            <span class="meta-label">Status Code:</span>
+            <span id="response-status-badge" class="status-badge status-none">---</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Method:</span>
+            <span id="response-method" class="code-badge">---</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Endpoint:</span>
+            <span id="response-endpoint" class="code-badge">---</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">זמן תגובה:</span>
+            <span id="response-time" class="meta-val">0 ms</span>
+          </div>
+        </div>
+
+        <!-- Response Body Code Display -->
+        <div class="response-body-wrapper">
+          <div class="code-header">
+            <span>Response Body (JSON)</span>
+            <button type="button" id="btn-copy-response" class="btn-copy">📋 העתק</button>
+          </div>
+          <pre id="response-body-display" class="code-display code-font"><code>// תגובת השרת תוצג כאן לאחר שליחת הבקשה...</code></pre>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- Live Data Viewer Modal / Drawer -->
+    <section class="data-preview-card glass-panel">
+      <div class="preview-header">
+        <div class="preview-title-area">
+          <h3>📊 תמונת מצב עדכנית בזיכרון השרת (Live Server State)</h3>
+          <p>כאן תוכלו לראות בזמן אמת כיצד בקשות ה-POST, PUT, PATCH ו-DELETE שלכם משנות את הנתונים בשרת!</p>
+        </div>
+        <button id="btn-refresh-preview" class="btn-small btn-outline">🔄 רענן נתוני שרת</button>
+      </div>
+      <div class="preview-grid">
+        <div class="preview-column">
+          <h4 class="preview-col-title">📦 מוצרים פעילים (<span id="products-count">0</span>)</h4>
+          <div id="products-table-container" class="table-responsive">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+        <div class="preview-column">
+          <h4 class="preview-col-title">⭐ ביקורות ודירוגים (<span id="reviews-count">0</span>)</h4>
+          <div id="reviews-table-container" class="table-responsive">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>מטלה 3 - פיתוח יישומי אינטרנט | המכללה למינהל | שרת Node.js & Express עם SSR (EJS) ו-Client Side ב-Vanilla JS</p>
+  </footer>
+
+  <!-- Pass server stages data safely to client JS -->
+  <script id="stages-data" type="application/json">
+    <%- JSON.stringify(stages) %>
+  </script>
+  <script src="/js/game.js"></script>
+</body>
+</html>
