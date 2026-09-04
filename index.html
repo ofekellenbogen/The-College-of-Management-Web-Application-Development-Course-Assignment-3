@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>משחק ללימוד HTTP ו-REST API | המכללה למינהל</title>
+  <title>משחק ללימוד HTTP ו-REST API (מטלה 3) | המכללה למינהל</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
@@ -54,7 +54,7 @@
       font-weight: 700;
       padding: 0.3rem 0.8rem;
       border-radius: 20px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       border: 1px solid rgba(88, 166, 255, 0.3);
     }
 
@@ -65,33 +65,51 @@
       font-weight: 800;
     }
 
-    .subtitle {
+    .subtitle-quote {
       color: var(--text-muted);
       font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      border-right: 3px solid var(--accent-color);
+      padding-right: 0.75rem;
+    }
+
+    .intro-p {
+      color: #c9d1d9;
+      font-size: 1.05rem;
       margin-bottom: 1.5rem;
     }
 
+    hr {
+      border: none;
+      border-top: 1px solid var(--border-color);
+      margin: 2rem 0;
+    }
+
     .alert-box {
-      background: rgba(210, 153, 34, 0.1);
-      border: 1px solid rgba(210, 153, 34, 0.3);
+      background: rgba(88, 166, 255, 0.08);
+      border: 1px solid rgba(88, 166, 255, 0.25);
       border-radius: 10px;
-      padding: 1.2rem;
+      padding: 1rem 1.25rem;
       margin: 1.5rem 0;
-      color: #e3b341;
+      color: #e6edf3;
       font-size: 0.95rem;
     }
 
     .alert-box strong {
-      color: #fff;
+      color: var(--accent-color);
     }
 
     h2 {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       color: #fff;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
       margin-bottom: 1rem;
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     h3 {
@@ -112,7 +130,7 @@
     }
 
     li {
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.5rem;
     }
 
     .code-block {
@@ -129,18 +147,6 @@
       overflow-x: auto;
     }
 
-    .step-box {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .step-box strong {
-      color: #fff;
-    }
-
     .code-inline {
       font-family: var(--font-mono);
       background: rgba(255, 255, 255, 0.08);
@@ -150,6 +156,19 @@
       direction: ltr;
       display: inline-block;
       font-size: 0.9em;
+    }
+
+    .step-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem 1.2rem;
+      margin-bottom: 0.6rem;
+      list-style: none;
+    }
+
+    .step-item strong {
+      color: #fff;
     }
 
     .repo-link-btn {
@@ -174,55 +193,103 @@
 <body>
 
   <div class="container">
-    <div class="header-badge">המכללה למינהל | פיתוח יישומי אינטרנט</div>
+    <div class="header-badge">מטלה 3</div>
     <h1>משחק ללימוד HTTP ו-REST API (מטלה 3)</h1>
-    <p class="subtitle">אפליקציית Web אינטראקטיבית לתרגול תקשורת Client-Server, מתודות HTTP, ועקרונות RESTful API.</p>
+    <div class="subtitle-quote">המכללה למינהל | הקורס לפיתוח יישומי אינטרנט</div>
 
-    <div class="alert-box">
-      <strong>⚠️ שים לב:</strong> אפליקציה זו מבוססת על <strong>צד שרת אמיתי (Node.js & Express)</strong> שאינו יכול לרוץ ב-GitHub Pages.<br>
-      על פי הנחיות המטלה, יש להריץ את השרת בסביבה מקומית בהתאם להוראות שלהלן.
-    </div>
+    <p class="intro-p">
+      אפליקציית Web אינטראקטיבית הממחישה את אופן התקשורת בין צד הלקוח לצד השרת באמצעות פרוטוקול HTTP ועקרונות REST API. המשחק מציג תרחישים שבהם המשתמש מרכיב ושולח בקשות HTTP אמיתיות לשרת Node.js & Express, ומקבל משוב בזמן אמת.
+    </p>
+
+    <hr>
 
     <h2>🚀 הוראות התקנה והרצה מקומית</h2>
 
-    <h3>1. שכפול המאגר / פתיחת התיקייה בטרמינל:</h3>
+    <div class="alert-box">
+      <strong>📌 שים לב:</strong> אפליקציה זו מבוססת על צד שרת (Node.js & Express) ולכן מורצת בסביבה מקומית בהתאם להנחיות המטלה.
+    </div>
+
+    <h3>דרישות מוקדמות</h3>
+    <ul>
+      <li><strong>Node.js</strong> (גרסה 16 ומעלה)</li>
+      <li><strong>npm</strong> (מותקן אוטומטית עם Node.js)</li>
+    </ul>
+
+    <h3>שלבי הרצה</h3>
+
+    <p>1. <strong>שכפול המאגר / פתיחת התיקייה:</strong></p>
     <div class="code-block">git clone https://github.com/ofekellenbogen/The-College-of-Management-Web-Application-Development-Course-Assignment-3.git
 cd The-College-of-Management-Web-Application-Development-Course-Assignment-3</div>
 
-    <h3>2. התקנת תלויות השרת:</h3>
+    <p>2. <strong>התקנת תלויות השרת:</strong></p>
     <div class="code-block">npm install</div>
 
-    <h3>3. הפעלת שרת ה-Express:</h3>
+    <p>3. <strong>הפעלת השרת:</strong></p>
     <div class="code-block">npm start</div>
+    <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: -0.5rem;"><em>(להרצה במצב פיתוח עם טעינה אוטומטית: <span class="code-inline">npm run dev</span>)</em></p>
 
-    <h3>4. פתיחת האפליקציה בדפדפן:</h3>
+    <p>4. <strong>פתיחת האפליקציה בדפדפן:</strong></p>
     <ul>
       <li>🎮 <strong>עמוד המשחק הראשי:</strong> <a href="http://localhost:3000" target="_blank" style="color: var(--accent-color); direction: ltr; display: inline-block;">http://localhost:3000</a></li>
       <li>📋 <strong>עמוד סכמות המערכת (SSR):</strong> <a href="http://localhost:3000/schemas" target="_blank" style="color: var(--accent-color); direction: ltr; display: inline-block;">http://localhost:3000/schemas</a></li>
     </ul>
 
-    <h2>🎮 שלבי המשחק (10 שלבים מגוונים)</h2>
-    <div class="step-box"><strong>שלב 1:</strong> שליפת כל המוצרים (<span class="code-inline">GET /api/products</span>) - היכרות עם שליפת משאבים.</div>
-    <div class="step-box"><strong>שלב 2:</strong> שליפת מוצר בודד לפי מזהה (<span class="code-inline">GET /api/products/1</span>) - שימוש ב-Route Parameter.</div>
-    <div class="step-box"><strong>שלב 3:</strong> בקשה למשאב שאינו קיים (<span class="code-inline">GET /api/products/999</span>) - טיפול בשגיאת 404 Not Found.</div>
-    <div class="step-box"><strong>שלב 4:</strong> סינון מוצרים לפי קטגוריה (<span class="code-inline">GET /api/products?category=Electronics</span>) - שימוש ב-Query Parameter.</div>
-    <div class="step-box"><strong>שלב 5:</strong> שילוב מספר Query Parameters (<span class="code-inline">GET /api/products?category=Books&sortBy=price&order=asc</span>) - סינון ומיון לפי מחיר.</div>
-    <div class="step-box"><strong>שלב 6:</strong> יצירת מוצר חדש (<span class="code-inline">POST /api/products</span>) - העברת Request Body בפורמט JSON וקבלת 201 Created.</div>
-    <div class="step-box"><strong>שלב 7:</strong> עדכון פרטי מוצר קיים (<span class="code-inline">PATCH /api/products/4</span>) - שילוב Route Param ו-Request Body.</div>
-    <div class="step-box"><strong>שלב 8:</strong> מחיקת מוצר מזיכרון השרת (<span class="code-inline">DELETE /api/products/7</span>) - שימוש ב-DELETE.</div>
-    <div class="step-box"><strong>שלב 9:</strong> שליפת משאבים מקושרים (<span class="code-inline">GET /api/products/1/reviews</span>) - קשר 1 לרבים (Nested Resources).</div>
-    <div class="step-box"><strong>שלב 10:</strong> הוספת ביקורת למשאב מקושר (<span class="code-inline">POST /api/products/2/reviews</span>) - יצירת משאב היררכי.</div>
+    <hr>
 
-    <h2>🛠️ מאפיינים טכנולוגיים</h2>
+    <h2>🛠️ מאפיינים טכנולוגיים וארכיטקטורה</h2>
+
     <ul>
-      <li><strong>Node.js & Express:</strong> שרת RESTful מלא המנהל מוצרים וביקורות בזיכרון השרת עם אפשרות איפוס.</li>
-      <li><strong>Server-Side Rendering (EJS):</strong> עמוד משחק ועמוד סכמות מלאים המרונדרים בצד השרת.</li>
-      <li><strong>בדיקת נכונות בשרת בלבד:</strong> בדיקת התשובות והלוגיקה מתבצעות אך ורק בשרת ללא חשיפת הפתרונות לקליינט.</li>
-      <li><strong>Vanilla JavaScript & AJAX:</strong> שליחת בקשות HTTP אמיתיות לשרת ועדכון הממשק בזמן אמת ללא ריענון עמוד.</li>
+      <li>
+        <strong>צד שרת (Backend):</strong>
+        <ul style="margin-top: 0.4rem;">
+          <li>פותח באמצעות <strong>Node.js</strong> ו-<strong>Express</strong>.</li>
+          <li>ניהול שני משאבים מקושרים: <span class="code-inline">products</span> (מוצרים) ו-<span class="code-inline">reviews</span> (ביקורות) בקשר של 1 לרבים (1:N Relationship).</li>
+          <li>שמירת נתונים בזיכרון השרת (In-Memory Data Store) עם טעינה ראשונית מקובץ JSON ואפשרות איפוס.</li>
+          <li>ארכיטקטורת RESTful מלאה ונתיבים עקביים תחת הקידומת <span class="code-inline">/api</span>.</li>
+          <li>מנוע תבניות <strong>EJS</strong> לרינדור עמודים בצד השרת (Server-Side Rendering).</li>
+          <li>בדיקת נכונות השלבים (Verification Engine) מתבצעת אך ורק בצד השרת, ללא חשיפת הפתרונות לקליינט.</li>
+        </ul>
+      </li>
+      <li style="margin-top: 1rem;">
+        <strong>צד לקוח (Frontend):</strong>
+        <ul style="margin-top: 0.4rem;">
+          <li><strong>Vanilla JavaScript</strong> בלבד ללא ספריות חיצוניות.</li>
+          <li>שליחת בקשות אמיתיות באמצעות <strong>AJAX (Fetch API)</strong> ללא ריענון עמוד.</li>
+          <li>עיצוב Modern UI עשיר (Dark Theme, Glassmorphism, טיפוגרפיית Google Fonts).</li>
+          <li><strong>רספונסיביות מלאה</strong> למסכי מחשב ומכשירים ניידים.</li>
+          <li>הפרדה מלאה לקבצים חיצוניים תחת תיקיית <span class="code-inline">public/</span>.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <hr>
+
+    <h2>🎮 שלבי המשחק (10 שלבים)</h2>
+
+    <ul style="list-style: none; padding-right: 0;">
+      <li class="step-item">1. <strong>שלב 1 (GET All):</strong> שליפת כל המוצרים (<span class="code-inline">GET /api/products</span>) - היכרות עם שליפת משאבים.</li>
+      <li class="step-item">2. <strong>שלב 2 (Route Parameter):</strong> שליפת מוצר בודד לפי מזהה (<span class="code-inline">GET /api/products/1</span>).</li>
+      <li class="step-item">3. <strong>שלב 3 (404 Error Handling):</strong> בקשה למשאב שאינו קיים (<span class="code-inline">GET /api/products/999</span>) ובחינת תגובת השגיאה.</li>
+      <li class="step-item">4. <strong>שלב 4 (Query Parameter):</strong> סינון מוצרים לפי קטגוריה (<span class="code-inline">GET /api/products?category=Electronics</span>).</li>
+      <li class="step-item">5. <strong>שלב 5 (Multiple Query Parameters):</strong> שילוב סינון ומיון לפי מחיר (<span class="code-inline">GET /api/products?category=Books&sortBy=price&order=asc</span>).</li>
+      <li class="step-item">6. <strong>שלב 6 (POST + Request Body):</strong> יצירת מוצר חדש עם גוף בקשה JSON והחזרת סטטוס 201 Created.</li>
+      <li class="step-item">7. <strong>שלב 7 (PUT/PATCH + Route Param + Body):</strong> עדכון פרטי מחיר של מוצר קיים (<span class="code-inline">PATCH /api/products/4</span>).</li>
+      <li class="step-item">8. <strong>שלב 8 (DELETE + Route Param):</strong> מחיקת מוצר קיים מזיכרון השרת (<span class="code-inline">DELETE /api/products/7</span>).</li>
+      <li class="step-item">9. <strong>שלב 9 (Nested Resources):</strong> שליפת ביקורות עבור מוצר ספציפי (<span class="code-inline">GET /api/products/1/reviews</span>).</li>
+      <li class="step-item">10. <strong>שלב 10 (Nested Resource Creation):</strong> הוספת ביקורת חדשה למוצר קיים (<span class="code-inline">POST /api/products/2/reviews</span>).</li>
+    </ul>
+
+    <hr>
+
+    <h2>🌟 פיצ'רים מתקדמים</h2>
+    <ul>
+      <li><strong>לוח מעקב חי (Live Server State):</strong> טבלאות נתונים המציגות את השינויים בזיכרון השרת בזמן אמת.</li>
+      <li><strong>מערכת ניקוד והתקדמות:** ספירת ניסיונות, מד התקדמות, ואפשרות לחזור לשלבים שהושלמו.</li>
+      <li><strong>משוב ויזואלי מפורט:** הצגת Status Code צבעוני, זמני תגובה, וגוף תגובה מעוצב עם כפתור העתקה.</li>
     </ul>
 
     <a href="https://github.com/ofekellenbogen/The-College-of-Management-Web-Application-Development-Course-Assignment-3" class="repo-link-btn" target="_blank">
-      💻 צפייה בקוד המקור ב-GitHub
+      💻 צפייה במאגר הפרויקט ב-GitHub
     </a>
   </div>
 
