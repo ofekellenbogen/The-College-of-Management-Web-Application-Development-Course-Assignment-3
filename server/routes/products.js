@@ -56,19 +56,10 @@ router.post('/', (req, res) => {
   });
 });
 
-// PUT /api/products/:id - Full update of a product
+// PUT /api/products/:id - Update product
 router.put('/:id', (req, res) => {
-  const { name, category, price, inStock, rating } = req.body;
-  if (!name || !category || price === undefined) {
-    return res.status(400).json({
-      success: false,
-      error: 'Bad Request',
-      message: 'PUT requires all required fields: name, category, and price'
-    });
-  }
-
-  const updated = db.updateProduct(req.params.id, req.body, false);
-  if (!updated) {
+  const existing = db.getProductById(req.params.id);
+  if (!existing) {
     return res.status(404).json({
       success: false,
       error: 'Not Found',
@@ -76,6 +67,16 @@ router.put('/:id', (req, res) => {
     });
   }
 
+  const { name, category, price, inStock, rating } = req.body;
+  const updatePayload = {
+    name: name !== undefined ? name : existing.name,
+    category: category !== undefined ? category : existing.category,
+    price: price !== undefined ? Number(price) : existing.price,
+    inStock: inStock !== undefined ? Boolean(inStock) : existing.inStock,
+    rating: rating !== undefined ? Number(rating) : existing.rating
+  };
+
+  const updated = db.updateProduct(req.params.id, updatePayload, false);
   res.status(200).json({
     success: true,
     message: 'Product updated successfully',

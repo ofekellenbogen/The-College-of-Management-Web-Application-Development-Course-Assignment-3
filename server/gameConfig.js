@@ -19,10 +19,11 @@ const gameStages = [
       if (reqInfo.method !== "GET") {
         return { success: false, message: "מתודת ה-HTTP שנבחרה שגויה. לשליפת מידע יש להשתמש ב-GET." };
       }
-      if (reqInfo.path !== "/api/products") {
+      if (reqInfo.basePath !== "/api/products") {
         return { success: false, message: "הנתיב שגוי. הנתיב הסטנדרטי ב-REST לשליפת רשימת מוצרים הוא /api/products." };
       }
-      if (Object.keys(reqInfo.query).length > 0) {
+      const meaningfulQueryParams = Object.keys(reqInfo.query).filter(k => k !== 'stageId');
+      if (meaningfulQueryParams.length > 0) {
         return { success: false, message: "בשלב זה אין צורך ב-Query Parameters, בקשנו את כל המוצרים ללא סינון." };
       }
       return {
@@ -46,7 +47,7 @@ const gameStages = [
       if (reqInfo.method !== "GET") {
         return { success: false, message: "שליפת מוצר בודד מתבצעת באמצעות מתודת GET." };
       }
-      if (reqInfo.path !== "/api/products/1") {
+      if (reqInfo.basePath !== "/api/products/1") {
         return { success: false, message: "הנתיב אינו תקין. עליך לציין Route Parameter עם ה-ID 1 (לדוגמה: /api/products/1)." };
       }
       return {
@@ -70,7 +71,7 @@ const gameStages = [
       if (reqInfo.method !== "GET") {
         return { success: false, message: "עליך לשלוח בקשת GET לשליפת המוצר." };
       }
-      if (reqInfo.path !== "/api/products/999") {
+      if (reqInfo.basePath !== "/api/products/999") {
         return { success: false, message: "הנתיב צריך לפנות למזהה 999: /api/products/999." };
       }
       return {
@@ -97,7 +98,8 @@ const gameStages = [
       if (reqInfo.basePath !== "/api/products") {
         return { success: false, message: "הנתיב הבסיסי צריך להיות /api/products." };
       }
-      if (reqInfo.query.category !== "Electronics") {
+      const category = (reqInfo.query.category || '').toLowerCase();
+      if (category !== "electronics") {
         return { success: false, message: "עליך להגדיר Query Parameter בשם category עם הערך Electronics." };
       }
       return {
@@ -124,18 +126,21 @@ const gameStages = [
       if (reqInfo.basePath !== "/api/products") {
         return { success: false, message: "הנתיב הבסיסי הוא /api/products." };
       }
-      if (reqInfo.query.category !== "Books") {
+      const category = (reqInfo.query.category || '').toLowerCase();
+      if (category !== "books") {
         return { success: false, message: "חסר או שגוי הפרמטר category=Books." };
       }
-      if (reqInfo.query.sortBy !== "price") {
+      const sortBy = (reqInfo.query.sortBy || '').toLowerCase();
+      if (sortBy !== "price") {
         return { success: false, message: "עליך להגדיר מיון לפי מחיר: sortBy=price." };
       }
-      if (reqInfo.query.order && reqInfo.query.order !== "asc") {
+      const order = (reqInfo.query.order || 'asc').toLowerCase();
+      if (order !== "asc") {
         return { success: false, message: "למיון מהזול ליקר יש להגדיר order=asc." };
       }
       return {
         success: true,
-        message: "מדהים! שילבת בהצלחה מספר Query Parameters והשרת סינן ומייין את הנתונים בפועל!"
+        message: "מדהים! שילבת בהצלחה מספר Query Parameters והשרת סינן ומיין את הנתונים בפועל!"
       };
     }
   },
@@ -154,7 +159,7 @@ const gameStages = [
       if (reqInfo.method !== "POST") {
         return { success: false, message: "יצירת משאב חדש מתבצעת במתודת POST." };
       }
-      if (reqInfo.path !== "/api/products") {
+      if (reqInfo.basePath !== "/api/products") {
         return { success: false, message: "הנתיב ליצירת מוצר חדש הוא /api/products." };
       }
       const body = reqInfo.body;
@@ -164,7 +169,8 @@ const gameStages = [
       if (!body.name || !body.category || body.price === undefined) {
         return { success: false, message: "גוף הבקשה חייב להכיל לפחות name, category ו-price." };
       }
-      if (body.name.toLowerCase().indexOf("node") === -1 && body.name.toLowerCase().indexOf("action") === -1) {
+      const name = String(body.name).toLowerCase();
+      if (!name.includes("node") && !name.includes("action") && !name.includes("book")) {
         return { success: false, message: "שם המוצר נדרש להיות 'Node.js in Action' או דומה." };
       }
       return {
@@ -188,15 +194,15 @@ const gameStages = [
       if (reqInfo.method !== "PATCH" && reqInfo.method !== "PUT") {
         return { success: false, message: "לעדכון משאב יש להשתמש ב-PATCH (עדכון חלקי) או PUT (עדכון מלא)." };
       }
-      if (reqInfo.path !== "/api/products/4") {
+      if (reqInfo.basePath !== "/api/products/4") {
         return { success: false, message: "עליך לציין את מזהה המוצר 4 בנתיב: /api/products/4." };
       }
       const body = reqInfo.body;
-      if (!body || (body.price === undefined && !body.price)) {
+      if (!body || body.price === undefined || body.price === null) {
         return { success: false, message: "גוף הבקשה חייב לכלול את השדה price עם המחיר המעודכן (69.99)." };
       }
-      if (Number(body.price) !== 69.99) {
-        return { success: false, message: "המחיר המעודכן צריך להיות בדיוק 69.99." };
+      if (Math.abs(Number(body.price) - 69.99) > 0.01) {
+        return { success: false, message: "המחיר המעודכן צריך להיות 69.99." };
       }
       return {
         success: true,
@@ -219,7 +225,7 @@ const gameStages = [
       if (reqInfo.method !== "DELETE") {
         return { success: false, message: "מחיקת משאב מתבצעת במתודת DELETE." };
       }
-      if (reqInfo.path !== "/api/products/7") {
+      if (reqInfo.basePath !== "/api/products/7") {
         return { success: false, message: "הנתיב למחיקת מוצר 7 הוא /api/products/7." };
       }
       return {
@@ -243,7 +249,7 @@ const gameStages = [
       if (reqInfo.method !== "GET") {
         return { success: false, message: "שליפת נתוני הביקורות נעשית במתודת GET." };
       }
-      if (reqInfo.path !== "/api/products/1/reviews") {
+      if (reqInfo.basePath !== "/api/products/1/reviews") {
         return { success: false, message: "הנתיב ההיררכי התקני לשליפת ביקורות של מוצר 1 הוא /api/products/1/reviews." };
       }
       return {
@@ -267,7 +273,7 @@ const gameStages = [
       if (reqInfo.method !== "POST") {
         return { success: false, message: "הוספת ביקורת חדשה נעשית באמצעות POST." };
       }
-      if (reqInfo.path !== "/api/products/2/reviews") {
+      if (reqInfo.basePath !== "/api/products/2/reviews") {
         return { success: false, message: "הנתיב להוספת ביקורת למוצר 2 הוא /api/products/2/reviews." };
       }
       const body = reqInfo.body;
@@ -342,8 +348,62 @@ function getClientStages() {
   }));
 }
 
+/**
+ * Server-side unified stage validation runner
+ * Used by both the request-intercepting Middleware and /api/game/verify
+ */
+function validateStageRequest(stageId, rawReqInfo, db) {
+  const numId = parseInt(stageId, 10);
+  const stage = gameStages.find(s => s.id === numId);
+  if (!stage) {
+    return {
+      found: false,
+      stageId: numId,
+      isCorrect: false,
+      feedback: `שלב עם מזהה ${stageId} לא נמצא במערכת.`,
+      expectedStatus: 404
+    };
+  }
+
+  // Parse path and clean base path
+  let fullPath = (rawReqInfo.path || rawReqInfo.originalUrl || '').trim();
+  // Strip protocol/host if accidentally passed
+  fullPath = fullPath.replace(/^https?:\/\/[^/]+/i, '');
+  if (!fullPath.startsWith('/')) {
+    fullPath = '/' + fullPath;
+  }
+  let cleanPath = fullPath.split('?')[0];
+  // Strip trailing slash if longer than 1 character
+  if (cleanPath.length > 1 && cleanPath.endsWith('/')) {
+    cleanPath = cleanPath.slice(0, -1);
+  }
+
+  // Query normalization
+  const query = { ...(rawReqInfo.query || {}) };
+  delete query.stageId; // Don't let meta param interfere with stage query requirements
+
+  const reqInfo = {
+    method: (rawReqInfo.method || 'GET').toUpperCase(),
+    path: cleanPath,
+    basePath: cleanPath,
+    fullPath: fullPath,
+    query: query,
+    body: rawReqInfo.body || null
+  };
+
+  const validationResult = stage.validate(reqInfo, db);
+  return {
+    found: true,
+    stageId: stage.id,
+    isCorrect: validationResult.success,
+    feedback: validationResult.message,
+    expectedStatus: stage.expectedStatus
+  };
+}
+
 module.exports = {
   gameStages,
   resourceSchemas,
-  getClientStages
+  getClientStages,
+  validateStageRequest
 };

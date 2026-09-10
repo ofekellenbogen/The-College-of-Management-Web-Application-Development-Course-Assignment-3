@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
-const { getClientStages, resourceSchemas } = require('./server/gameConfig');
+const { getClientStages, resourceSchemas, validateStageRequest } = require('./server/gameConfig');
+const db = require('./server/db');
 const productsRouter = require('./server/routes/products');
 const reviewsRouter = require('./server/routes/reviews');
 const gameRouter = require('./server/routes/game');
@@ -11,6 +12,30 @@ const PORT = process.env.PORT || 3000;
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Game Stage Validation Middleware:
+// Every game request sends the current stage ID (via X-Stage-Id header or stageId query param).
+// The server verifies the request against the stage requirements and returns validation headers.
+app.use((req, res, next) => {
+  const stageHeader = req.headers['x-stage-id'] || req.headers['stage-id'] || req.query.stageId;
+  if (stageHeader) {
+    const stageId = parseInt(stageHeader, 10);
+    if (!isNaN(stageId)) {
+      const validation = validateStageRequest(stageId, {
+        method: req.method,
+        path: req.originalUrl || req.url,
+        query: req.query,
+        body: req.body
+      }, db);
+
+      res.set('X-Stage-Id', String(stageId));
+      res.set('X-Stage-Valid', validation.isCorrect ? 'true' : 'false');
+      res.set('X-Stage-Feedback', encodeURIComponent(validation.feedback));
+      res.set('Access-Control-Expose-Headers', 'X-Stage-Id, X-Stage-Valid, X-Stage-Feedback');
+    }
+  }
+  next();
+});
 
 // Static files middleware (CSS & Client JS)
 app.use(express.static(path.join(__dirname, 'public')));

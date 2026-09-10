@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { gameStages, getClientStages } = require('../gameConfig');
+const { gameStages, getClientStages, validateStageRequest } = require('../gameConfig');
 const db = require('../db');
 
 // GET /api/game/stages - Return client-safe list of stages (without verification algorithms)
@@ -23,35 +23,25 @@ router.post('/verify', (req, res) => {
     });
   }
 
-  const stage = gameStages.find(s => s.id === parseInt(stageId, 10));
-  if (!stage) {
+  const result = validateStageRequest(stageId, {
+    method,
+    path: reqPath,
+    query,
+    body
+  }, db);
+
+  if (!result.found) {
     return res.status(404).json({
       success: false,
-      message: `Stage with ID ${stageId} not found`
+      message: result.feedback
     });
   }
 
-  // Parse path and base path
-  const fullPath = (reqPath || '').trim();
-  const cleanPath = fullPath.split('?')[0];
-
-  const reqInfo = {
-    method: (method || 'GET').toUpperCase(),
-    path: cleanPath,
-    basePath: cleanPath,
-    fullPath: fullPath,
-    query: query || {},
-    body: body
-  };
-
-  // Run server-side stage validation
-  const validationResult = stage.validate(reqInfo, db);
-
   res.status(200).json({
-    stageId: stage.id,
-    isCorrect: validationResult.success,
-    feedback: validationResult.message,
-    expectedStatus: stage.expectedStatus
+    stageId: result.stageId,
+    isCorrect: result.isCorrect,
+    feedback: result.feedback,
+    expectedStatus: result.expectedStatus
   });
 });
 
