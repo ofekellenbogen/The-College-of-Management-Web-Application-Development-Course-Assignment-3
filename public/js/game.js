@@ -346,6 +346,9 @@
     // Reset Banner to Pending
     resetBanner();
 
+    // Clear Previous Server Response Details & JSON Body
+    clearResponseDisplay();
+
     // Prepare clean form for user assembly (NO solutions pre-filled!)
     resetFormForStage(stage);
 
@@ -415,6 +418,25 @@
         'הרכב את הבקשה המתאימה לשלב הנוכחי ולחץ על "שלח בקשת HTTP לשרת".';
     }
     if (btnNextStage) btnNextStage.classList.add('hidden');
+  }
+
+  function clearResponseDisplay() {
+    if (responseStatusBadge) {
+      responseStatusBadge.textContent = '---';
+      responseStatusBadge.className = 'status-badge status-none';
+    }
+    if (responseMethod) {
+      responseMethod.textContent = '---';
+    }
+    if (responseEndpoint) {
+      responseEndpoint.textContent = '---';
+    }
+    if (responseTime) {
+      responseTime.textContent = '0 ms';
+    }
+    if (responseBodyDisplay) {
+      responseBodyDisplay.textContent = '// תגובת השרת תוצג כאן לאחר שליחת הבקשה...';
+    }
   }
 
   // Main AJAX Action: Send Real HTTP Request & Verify against Server
