@@ -13,10 +13,6 @@
   <!-- Header / Navigation Bar -->
   <header class="app-header">
     <div class="header-container">
-      <div class="logo-area">
-        <span class="logo-badge">REST & HTTP</span>
-        <h1 class="logo-title">משחק לימוד HTTP ו-REST API</h1>
-      </div>
       <nav class="nav-links">
         <a href="/" class="nav-btn active" id="nav-game-link">🎮 משחק ראשי</a>
         <a href="/schemas" class="nav-btn" target="_blank" id="nav-schemas-link">📋 סכמות המערכת (SSR)</a>
@@ -27,6 +23,10 @@
           ⭐ איפוס התקדמות
         </button>
       </nav>
+      <div class="logo-area">
+        <span class="logo-badge">REST & HTTP</span>
+        <h1 class="logo-title">משחק לימוד HTTP ו-REST API</h1>
+      </div>
     </div>
   </header>
 
@@ -82,9 +82,8 @@
           <% }); %>
         </div>
       </div>
-      <p id="stage-desc" class="mission-description"><%= stages[0].description %></p>
       <div class="mission-instruction-box">
-        <strong>🎯 משימה:</strong>
+        <strong>🎯 משימת השלב:</strong>
         <span id="stage-instruction"><%= stages[0].instruction %></span>
       </div>
       <div class="hint-toggle-row">
@@ -240,7 +239,7 @@
   <!-- Footer -->
   <footer class="app-footer">
     <div class="footer-team" style="margin-bottom: 0.5rem; font-weight: 600;">
-      <span>👥 מגישים: אופק אלנבוגן | בן/בת הזוג לצוות</span>
+      <span>👥 מגישים: אופק אלנבוגן | יואב סיטבון</span>
     </div>
     <p>מטלה 3 - פיתוח יישומי אינטרנט | המכללה למינהל | שרת Node.js & Express עם SSR (EJS) ו-Client Side ב-Vanilla JS</p>
   </footer>
