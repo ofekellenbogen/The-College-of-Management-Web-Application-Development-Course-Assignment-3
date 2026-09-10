@@ -13,6 +13,20 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Live Request Logger Middleware (Prints all incoming API and page requests to the server terminal)
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    if (req.originalUrl.startsWith('/api') || req.originalUrl === '/' || req.originalUrl === '/schemas') {
+      const duration = Date.now() - start;
+      const stageHeader = req.headers['x-stage-id'] || req.query.stageId;
+      const stageTag = stageHeader ? ` [🎯 שלב ${stageHeader}]` : '';
+      console.log(`📡 [HTTP ${req.method}] ${req.originalUrl} ➔ Status: ${res.statusCode} (${duration}ms)${stageTag}`);
+    }
+  });
+  next();
+});
+
 // Game Stage Validation Middleware:
 // Every game request sends the current stage ID (via X-Stage-Id header or stageId query param).
 // The server verifies the request against the stage requirements and returns validation headers.
