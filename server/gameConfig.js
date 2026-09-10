@@ -134,9 +134,9 @@ const gameStages = [
       if (sortBy !== "price") {
         return { success: false, message: "עליך להגדיר מיון לפי מחיר: sortBy=price." };
       }
-      const order = (reqInfo.query.order || 'asc').toLowerCase();
+      const order = (reqInfo.query.order || '').toLowerCase();
       if (order !== "asc") {
-        return { success: false, message: "למיון מהזול ליקר יש להגדיר order=asc." };
+        return { success: false, message: "למיון מהזול ליקר יש להגדיר Query Parameter של כיוון מיון עולה: order=asc." };
       }
       return {
         success: true,
@@ -163,19 +163,48 @@ const gameStages = [
         return { success: false, message: "הנתיב ליצירת מוצר חדש הוא /api/products." };
       }
       const body = reqInfo.body;
-      if (!body || typeof body !== "object") {
-        return { success: false, message: "חובה לשלוח Request Body במבנה JSON תקני." };
+      if (!body || typeof body !== "object" || Array.isArray(body)) {
+        return { success: false, message: "חובה לשלוח Request Body במבנה JSON תקני (אובייקט)." };
       }
-      if (!body.name || !body.category || body.price === undefined) {
-        return { success: false, message: "גוף הבקשה חייב להכיל לפחות name, category ו-price." };
+
+      // 1. Check 'name' field and value
+      if (body.name === undefined || body.name === null || String(body.name).trim() === "") {
+        return { success: false, message: "גוף הבקשה חייב להכיל את השדה name עם שם המוצר." };
       }
-      const name = String(body.name).toLowerCase();
-      if (!name.includes("node") && !name.includes("action") && !name.includes("book")) {
-        return { success: false, message: "שם המוצר נדרש להיות 'Node.js in Action' או דומה." };
+      const name = String(body.name).trim().toLowerCase();
+      if (name !== "node.js in action" && name !== "nodejs in action") {
+        return { success: false, message: "שם המוצר (name) חייב להיות 'Node.js in Action' כפי שהוגדר במשימה." };
       }
+
+      // 2. Check 'category' field and value
+      if (body.category === undefined || body.category === null || String(body.category).trim() === "") {
+        return { success: false, message: "גוף הבקשה חייב להכיל את השדה category (קטגוריית המוצר)." };
+      }
+      const category = String(body.category).trim().toLowerCase();
+      if (category !== "books") {
+        return { success: false, message: "הקטגוריה (category) חייבת להיות 'Books' כפי שהוגדר במשימה." };
+      }
+
+      // 3. Check 'price' field and value
+      if (body.price === undefined || body.price === null || body.price === "") {
+        return { success: false, message: "גוף הבקשה חייב להכיל את השדה price (מחיר המוצר)." };
+      }
+      const price = Number(body.price);
+      if (isNaN(price) || Math.abs(price - 34) > 0.01) {
+        return { success: false, message: "המחיר (price) חייב להיות 34.00 (או 34) כפי שהוגדר במשימה." };
+      }
+
+      // 4. Check 'inStock' field and value
+      if (body.inStock === undefined || body.inStock === null || body.inStock === "") {
+        return { success: false, message: "גוף הבקשה חייב להכיל את השדה inStock (זמינות במלאי)." };
+      }
+      if (body.inStock !== true && body.inStock !== "true") {
+        return { success: false, message: "השדה inStock חייב להיות מוגדר כ-true (נמצא במלאי) כפי שהוגדר במשימה." };
+      }
+
       return {
         success: true,
-        message: "מעולה! המוצר נוסף לזיכרון השרת והשרת השיב עם סטטוס 201 Created!"
+        message: "מעולה! המוצר נוסף לזיכרון השרת עם כל השדות והנתונים המדויקים, והשרת השיב עם סטטוס 201 Created!"
       };
     }
   },
@@ -198,11 +227,15 @@ const gameStages = [
         return { success: false, message: "עליך לציין את מזהה המוצר 4 בנתיב: /api/products/4." };
       }
       const body = reqInfo.body;
-      if (!body || body.price === undefined || body.price === null) {
+      if (!body || typeof body !== "object" || Array.isArray(body)) {
+        return { success: false, message: "חובה לשלוח Request Body במבנה JSON תקני." };
+      }
+      if (body.price === undefined || body.price === null || body.price === "") {
         return { success: false, message: "גוף הבקשה חייב לכלול את השדה price עם המחיר המעודכן (69.99)." };
       }
-      if (Math.abs(Number(body.price) - 69.99) > 0.01) {
-        return { success: false, message: "המחיר המעודכן צריך להיות 69.99." };
+      const price = Number(body.price);
+      if (isNaN(price) || Math.abs(price - 69.99) > 0.01) {
+        return { success: false, message: "המחיר המעודכן (price) חייב להיות 69.99 ש\"ח כפי שהוגדר במשימה." };
       }
       return {
         success: true,
@@ -277,12 +310,38 @@ const gameStages = [
         return { success: false, message: "הנתיב להוספת ביקורת למוצר 2 הוא /api/products/2/reviews." };
       }
       const body = reqInfo.body;
-      if (!body || typeof body !== "object") {
-        return { success: false, message: "חובה להעביר JSON Body עם פרטי הביקורת." };
+      if (!body || typeof body !== "object" || Array.isArray(body)) {
+        return { success: false, message: "חובה להעביר JSON Body תקני עם פרטי הביקורת." };
       }
-      if (!body.author || !body.rating || !body.comment) {
-        return { success: false, message: "הביקורת חייבת להכיל author, rating (מספר בין 1 ל-5) ו-comment." };
+
+      // 1. Author field & exact value
+      if (body.author === undefined || body.author === null || String(body.author).trim() === "") {
+        return { success: false, message: "הביקורת חייבת להכיל את השדה author (שם הכותב/ת)." };
       }
+      const author = String(body.author).trim().toLowerCase();
+      if (author !== "dana ron") {
+        return { success: false, message: "שם כותב הביקורת (author) חייב להיות 'Dana Ron' כפי שהוגדר במשימה." };
+      }
+
+      // 2. Rating field & exact value
+      if (body.rating === undefined || body.rating === null || body.rating === "") {
+        return { success: false, message: "הביקורת חייבת להכיל את השדה rating (דירוג בין 1 ל-5)." };
+      }
+      const rating = Number(body.rating);
+      if (isNaN(rating) || rating !== 5) {
+        return { success: false, message: "דירוג הביקורת (rating) חייב להיות 5 כפי שהוגדר במשימה." };
+      }
+
+      // 3. Comment field & exact value
+      if (body.comment === undefined || body.comment === null || String(body.comment).trim() === "") {
+        return { success: false, message: "הביקורת חייבת להכיל את השדה comment (תוכן הביקורת)." };
+      }
+      const comment = String(body.comment).trim().toLowerCase();
+      const normalizedComment = comment.replace(/[!.,]/g, '').trim();
+      if (normalizedComment !== "must have for developers") {
+        return { success: false, message: "תוכן הביקורת (comment) חייב להיות 'Must have for developers!' כפי שהוגדר במשימה." };
+      }
+
       return {
         success: true,
         message: "מדהים! סיימת בהצלחה את כל שלבי המשחק והבנת לעומק את עקרונות ה-REST ו-HTTP!"
