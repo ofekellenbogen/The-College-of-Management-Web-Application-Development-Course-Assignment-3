@@ -98,6 +98,16 @@
     }
   }
 
+  // Check if a stage is unlocked (Stage 1 is always unlocked; Stage N unlocks only after Stage N-1 is completed)
+  function isStageUnlocked(index) {
+    if (index === 0) return true;
+    if (index < 0 || index >= stages.length) return false;
+    const stage = stages[index];
+    if (completedStages.has(stage.id)) return true; // Already completed stages can be revisited
+    const prevStage = stages[index - 1];
+    return Boolean(prevStage && completedStages.has(prevStage.id));
+  }
+
   function loadProgress() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -109,7 +119,16 @@
         if (typeof data.score === 'number') score = data.score;
         if (typeof data.attemptsCount === 'number') attemptsCount = data.attemptsCount;
         if (typeof data.lastStageIndex === 'number' && data.lastStageIndex >= 0 && data.lastStageIndex < stages.length) {
-          currentStageIndex = data.lastStageIndex;
+          if (isStageUnlocked(data.lastStageIndex)) {
+            currentStageIndex = data.lastStageIndex;
+          } else {
+            let highest = 0;
+            for (let i = 0; i < stages.length; i++) {
+              if (isStageUnlocked(i)) highest = i;
+              else break;
+            }
+            currentStageIndex = highest;
+          }
         }
       }
     } catch (e) {
@@ -128,10 +147,6 @@
       } catch (e) {}
 
       updateProgressUI();
-      document.querySelectorAll('.stage-step-btn').forEach((btn) => {
-        btn.classList.remove('completed');
-      });
-
       loadStage(0);
       alert('התקדמות המשחק אופסה בהצלחה!');
     }
@@ -147,15 +162,30 @@
       progressBarFill.style.width = `${pct}%`;
     }
 
-    // Update stepper completed icons
-    completedStages.forEach((id) => {
-      const btn = document.getElementById(`stage-step-${id}`);
-      if (btn) btn.classList.add('completed');
+    // Update stepper completed icons and lock states
+    stages.forEach((stage, idx) => {
+      const btn = document.getElementById(`stage-step-${stage.id}`);
+      if (btn) {
+        const isCompleted = completedStages.has(stage.id);
+        const isUnlocked = isStageUnlocked(idx);
+
+        btn.classList.toggle('completed', isCompleted);
+        btn.classList.toggle('locked', !isUnlocked);
+        btn.disabled = !isUnlocked;
+
+        if (!isUnlocked) {
+          btn.setAttribute('title', `🔒 שלב ${stage.id} נעול (יש להשלים קודם את שלב ${stages[idx - 1].id})`);
+        } else if (isCompleted) {
+          btn.setAttribute('title', `✅ שלב ${stage.id} (הושלם)`);
+        } else {
+          btn.setAttribute('title', `שלב ${stage.id}`);
+        }
+      }
     });
   }
 
   function setupEventListeners() {
-    // Stage navigation stepper (allows clicking any stage at any time)
+    // Stage navigation stepper (allows clicking only unlocked stages)
     if (stageStepper) {
       stageStepper.addEventListener('click', (e) => {
         const btn = e.target.closest('.stage-step-btn');
@@ -163,6 +193,10 @@
           const stageId = parseInt(btn.dataset.stage, 10);
           const idx = stages.findIndex((s) => s.id === stageId);
           if (idx !== -1) {
+            if (!isStageUnlocked(idx)) {
+              alert(`🔒 שלב ${stageId} נעול! עליך להשלים בהצלחה את שלב ${stages[idx - 1].id} כדי להתקדם.`);
+              return;
+            }
             loadStage(idx);
           }
         }
@@ -272,6 +306,10 @@
   // Load a stage
   function loadStage(index) {
     if (index < 0 || index >= stages.length) return;
+    if (!isStageUnlocked(index)) {
+      console.warn(`Stage ${stages[index].id} is locked.`);
+      return;
+    }
     currentStageIndex = index;
     const stage = stages[index];
 

@@ -291,6 +291,22 @@ body {
   color: #3fb950;
 }
 
+.stage-step-btn.locked {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.3);
+  color: #6e7681;
+}
+
+.stage-step-btn.locked:hover {
+  background: rgba(0, 0, 0, 0.3);
+  color: #6e7681;
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: none;
+  box-shadow: none;
+}
+
 .step-check {
   display: none;
   font-size: 0.8rem;

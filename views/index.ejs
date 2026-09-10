@@ -59,7 +59,13 @@
       <!-- Stage Selector / Stepper -->
       <div class="stage-stepper-container" id="stage-stepper">
         <% stages.forEach(function(s, index) { %>
-          <button class="stage-step-btn <%= index === 0 ? 'active' : '' %>" data-stage="<%= s.id %>" id="stage-step-<%= s.id %>">
+          <button 
+            class="stage-step-btn <%= index === 0 ? 'active' : 'locked' %>" 
+            data-stage="<%= s.id %>" 
+            id="stage-step-<%= s.id %>"
+            title="<%= index === 0 ? 'שלב 1' : '🔒 שלב ' + s.id + ' נעול (השלם את שלב ' + (s.id - 1) + ' כדי לפתוח)' %>"
+            <%= index > 0 ? 'disabled' : '' %>
+          >
             <span class="step-num"><%= s.id %></span>
             <span class="step-check">✓</span>
           </button>
