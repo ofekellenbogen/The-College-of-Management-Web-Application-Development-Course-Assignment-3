@@ -17,14 +17,16 @@
 אם Node.js טרם מותקן על המחשב, ניתן להתקינו באחת מהדרכים הבאות:
 
 ### אפשרות א': התקנה ישירה מהטרמינל (CLI) — ללא צורך בדפדפן
-* **ב-Windows (ב-PowerShell / Terminal):**
-  ```powershell
-  winget install OpenJS.NodeJS.LTS
-  ```
-* **ב-macOS (באמצעות Homebrew):**
-  ```bash
-  brew install node
-  ```
+
+**ב-Windows (ב-PowerShell או Terminal):**
+```powershell
+winget install OpenJS.NodeJS.LTS
+```
+
+**ב-macOS (באמצעות Homebrew):**
+```bash
+brew install node
+```
 
 ### אפשרות ב': הורדה והתקנה גרפית
 מורידים ומתקינים את גרסת ה-LTS מאתר **[Node.js הרשמי](https://nodejs.org/)**.
@@ -41,12 +43,12 @@ npm -v
 ## 🚀 הוראות התקנה והרצה מלאות (צעד אחר צעד)
 
 ### שלב 1: פתיחת הטרמינל בתיקיית הפרויקט
-* אם הורדתם קובץ ZIP — חלצו אותו לתיקייה במחשב, פתחו את הטרמינל ונווטו לתיקייה.
+* אם הורדתם קובץ ZIP — חלצו אותו לתיקייה במחשב, ופתחו את הטרמינל בתוך התיקייה.
 * אם משכפלים דרך Git:
-  ```bash
-  git clone https://github.com/ofekellenbogen/The-College-of-Management-Web-Application-Development-Course-Assignment-3.git
-  cd The-College-of-Management-Web-Application-Development-Course-Assignment-3
-  ```
+```bash
+git clone https://github.com/ofekellenbogen/The-College-of-Management-Web-Application-Development-Course-Assignment-3.git
+cd The-College-of-Management-Web-Application-Development-Course-Assignment-3
+```
 
 ### שלב 2: התקנת התלויות והחבילות (`npm install`)
 יש להריץ את הפקודה הבאה בטרמינל להורדת כל החבילות הנדרשות לפרויקט:
@@ -59,14 +61,21 @@ npm install
 ```bash
 npm start
 ```
-*(השרת יופעל ויוצג פלט בטרמינל שהשרת מאזין בכתובת המקומית. למצב פיתוח עם רענון אוטומטי ניתן להריץ: `npm run dev`)*
+
+למצב פיתוח עם רענון אוטומטי (Nodemon):
+```bash
+npm run dev
+```
 
 ### שלב 4: הכתובת בדפדפן
 לאחר שהשרת רץ, פתחו את הדפדפן וגשו לכתובת:
-```
+```text
 http://localhost:3000
 ```
 
-*(עמוד סכמות הנתונים ב-SSR זמין בכתובת: `http://localhost:3000/schemas`)*
+לצפייה בעמוד סכמות הנתונים ב-SSR (אופציונלי):
+```text
+http://localhost:3000/schemas
+```
 
 </div>

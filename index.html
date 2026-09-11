@@ -30,10 +30,26 @@
       direction: rtl;
       text-align: right;
     }
-    .markdown-body pre, 
-    .markdown-body code {
-      direction: ltr;
-      text-align: left;
+    .markdown-body pre {
+      background-color: #0d1117 !important;
+      border: 1px solid #30363d !important;
+      border-left: 4px solid #58a6ff !important;
+      border-radius: 6px !important;
+      padding: 14px 18px !important;
+      margin: 14px 0 22px 0 !important;
+      direction: ltr !important;
+      text-align: left !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+    .markdown-body pre code {
+      background: transparent !important;
+      padding: 0 !important;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 0.98rem;
+      color: #79c0ff !important;
+      font-weight: 500;
+      direction: ltr !important;
+      text-align: left !important;
     }
     .markdown-body a {
       color: #58a6ff;
@@ -55,7 +71,7 @@
     // Configure Marked with syntax highlighting
     marked.setOptions({
       highlight: function(code, lang) {
-        const language = highlight.getLanguage(lang) ? lang : 'plaintext';
+        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
         return hljs.highlight(code, { language }).value;
       },
       gfm: true,
